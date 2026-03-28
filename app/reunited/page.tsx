@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/app/components/Navbar";
 import prisma from "@/lib/prisma";
+import type { Listing } from "@prisma/client";
 
 const PET_EMOJI: Record<string, string> = {
   DOG: "🐶",
@@ -54,7 +55,7 @@ export default async function ReunitedPage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {listings.map((listing) => {
+              {listings.map((listing: Listing) => {
                 const emoji = PET_EMOJI[listing.petType] ?? "🐾";
                 const date = listing.updatedAt.toLocaleDateString("en-GB", {
                   day: "numeric",

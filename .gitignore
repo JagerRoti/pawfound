@@ -48,3 +48,5 @@ next-env.d.ts
 
 # env files (all, not just .local)
 .env
+
+.vercel
