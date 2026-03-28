@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐾 PawFound
 
-## Getting Started
+> A full-stack lost & found pets platform — helping reunite pets with their families.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss)
+![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite)
+
+## ✨ Features
+
+- 📋 **Post listings** — report a lost or found pet with photo, breed, location, date, and contact info
+- 🔍 **Smart filters** — filter by Lost/Found, pet type (Dogs/Cats/Other), and location keyword
+- 📷 **Photo uploads** — local image upload with MIME & extension validation
+- 💌 **Contact form** — reach the poster directly from the listing detail page
+- ✅ **Mark as Reunited** — close listings once a pet is home (with email ownership verification)
+- 🎉 **Reunited gallery** — a happy wall of pets that made it back
+- 📱 **Mobile-first design** — responsive Tailwind CSS with warm amber/orange theme
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 App Router |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Database | SQLite via Prisma v7 ORM |
+| File storage | Local `/public/uploads` |
+| API | Next.js API Routes |
+
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up the database
+npx prisma migrate dev
+
+# Seed with sample data (optional)
+npx prisma db seed
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+pawfound/
+├── app/
+│   ├── api/              # API routes (listings, upload, contact)
+│   ├── components/       # Reusable UI components
+│   ├── listings/         # Listing detail + new listing pages
+│   ├── reunited/         # Reunited pets gallery
+│   └── page.tsx          # Homepage with filters
+├── lib/
+│   ├── prisma.ts         # Prisma client singleton
+│   └── parseId.ts        # Strict ID validation utility
+├── prisma/
+│   ├── schema.prisma     # Database schema
+│   └── seed.ts           # Sample data seeder
+└── public/uploads/       # Uploaded pet photos
+```
 
-## Learn More
+## 🔒 Security
 
-To learn more about Next.js, take a look at the following resources:
+- Upload validation: MIME type + file extension checks, UUID filenames (path traversal prevention)
+- PATCH ownership: callers must verify with the listing's contact email
+- Strict ID parsing: rejects non-integer and malformed IDs
+- Input sanitisation on all API routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📸 Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Homepage | Listing Detail | Post a Listing |
+|---|---|---|
+| Listing grid with filters | Full pet info + contact form | Lost/Found toggle + photo upload |
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

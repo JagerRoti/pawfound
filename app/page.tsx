@@ -1,100 +1,120 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useCallback } from "react";
+import Navbar from "@/app/components/Navbar";
+import ListingCard from "@/app/components/ListingCard";
+import FilterBar, { type Filters } from "@/app/components/FilterBar";
+import Link from "next/link";
+
+type Listing = {
+  id: number;
+  type: string;
+  petType: string;
+  name: string;
+  breed: string | null;
+  description: string;
+  location: string;
+  dateSeen: string;
+  photoPath: string | null;
+  status: string;
+};
+
+export default function HomePage() {
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<Filters>({
+    type: "ALL",
+    petType: "ALL",
+    search: "",
+  });
+
+  const fetchListings = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filters.type !== "ALL") params.set("type", filters.type);
+    if (filters.petType !== "ALL") params.set("petType", filters.petType);
+    if (filters.search.trim()) params.set("search", filters.search.trim());
+
+    const res = await fetch(`/api/listings?${params.toString()}`);
+    const data = await res.json();
+    setListings(Array.isArray(data) ? data : []);
+    setLoading(false);
+  }, [filters]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-page">
+      <Navbar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero */}
+      <div className="bg-gradient-to-br from-amber-light via-amber to-amber-dark py-14 px-4">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow mb-3">
+            🐾 Help Reunite Lost Pets
+          </h1>
+          <p className="text-white/90 text-lg mb-8">
+            Post a listing to help bring pets and families back together.
+          </p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            <Link
+              href="/listings/new?type=LOST"
+              className="bg-lost-btn text-white font-bold px-7 py-3.5 rounded-xl text-lg hover:opacity-90 transition-opacity shadow-lg"
+            >
+              😢 I Lost My Pet
+            </Link>
+            <Link
+              href="/listings/new?type=FOUND"
+              className="bg-found-btn text-white font-bold px-7 py-3.5 rounded-xl text-lg hover:opacity-90 transition-opacity shadow-lg"
+            >
+              🎉 I Found a Pet
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </div>
+
+      {/* Listings section */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <FilterBar filters={filters} onChange={setFilters} />
+
+        {loading ? (
+          <div className="text-center py-20 text-gray-400">
+            <span className="text-4xl block mb-3 animate-pulse">🐾</span>
+            Loading listings...
+          </div>
+        ) : listings.length === 0 ? (
+          <div className="text-center py-20">
+            <span className="text-5xl block mb-4">🔍</span>
+            <p className="text-gray-500 text-lg">No listings found.</p>
+            <p className="text-gray-400 text-sm mt-1">
+              Try adjusting your filters or be the first to post one!
+            </p>
+            <Link
+              href="/listings/new?type=LOST"
+              className="mt-4 inline-block text-pawblue hover:underline text-sm"
+            >
+              Post a listing →
+            </Link>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-gray-400 mt-4 mb-4">
+              {listings.length} listing{listings.length !== 1 ? "s" : ""} found
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {listings.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="text-center py-8 text-xs text-gray-400 border-t border-gray-200 mt-8">
+        Made with 🐾 — PawFound helps reunite lost pets with their families.
       </footer>
     </div>
   );

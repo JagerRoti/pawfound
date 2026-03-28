@@ -1,0 +1,25 @@
+// PawFound - Lost & Found Pets Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Listing {
+  id           Int      @id @default(autoincrement())
+  type         String   // "LOST" or "FOUND"
+  petType      String   // "DOG", "CAT", "OTHER"
+  name         String
+  breed        String?
+  description  String
+  location     String
+  dateSeen     DateTime
+  contactEmail String
+  photoPath    String?
+  status       String   @default("ACTIVE") // "ACTIVE" or "REUNITED"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
